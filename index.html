@@ -174,7 +174,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>Mis Proyectos</h1>
+        <h1>Proyectos sin fines de lucro</h1>
         <p class="subtitle">Desarrollado por Luis Paez</p>
         <button id="themeToggle" class="theme-toggle">🌙 Modo Oscuro</button>
     </div>
@@ -184,16 +184,16 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Buscar proyecto (ej. PDF, imagen, audio...)">
+        <input type="text" id="searchInput" placeholder="Buscar proyecto (ej. PDF a Word, convertidor de imagen, Convertidor de audio...)">
     </div>
 
     <div class="filters" id="filters">
         <button class="filter-btn active" data-filter="todos">Todos</button>
+        <button class="filter-btn" data-filter="humanos">Humanos</button>
         <button class="filter-btn" data-filter="utilidades">Utilidades</button>
         <button class="filter-btn" data-filter="imagenes">Imágenes</button>
         <button class="filter-btn" data-filter="pdf">PDF</button>
         <button class="filter-btn" data-filter="audio-video">Audio/Video</button>
-        <button class="filter-btn" data-filter="humanos">Humanos</button>
     </div>
 
     <div class="grid" id="projectGrid">
@@ -227,7 +227,7 @@
     const proyectos = [
         { nombre: "Mi IP Pública", desc: "Para ver tu dirección IP pública.", url: "https://ippublica.streamlit.app/", categoria: "utilidades" },
         { nombre: "Quita Fondo", desc: "Herramienta para quitar el fondo de una imagen.", url: "https://quitafondo-luispaez.streamlit.app/", categoria: "imagenes" },
-        { nombre: "Diccionario Odami", desc: "Diccionario de lengua Odami a Español.", url: "https://diccionarioodamiespanolbyluispaez.streamlit.app/", categoria: "humanos" },
+        { nombre: "Diccionario Odami a Español", desc: "Diccionario de lengua Odami a Español.", url: "https://diccionarioodamiespanolbyluispaez.streamlit.app/", categoria: "humanos" },
         { nombre: "HEIC a JPG", desc: "Convierte imágenes HEIC (formato de iPhone) a formato JPG.", url: "https://convertidorhiectojpg-luispaez.streamlit.app/", categoria: "imagenes" },
         { nombre: "Generador de Etiquetas", desc: "Generador de etiquetas de código de barras web.", url: "https://generadoretiquetasweb-luispaez.streamlit.app/", categoria: "utilidades" },
         { nombre: "Trabajo con PDF", desc: "Divide, une o convierte archivos PDF a Word.", url: "https://trabajoconpdf-luispaez.streamlit.app/", categoria: "pdf" },

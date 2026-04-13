@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Luis Páez</title>
+
+<style>
+:root{
+ --primary:#0a84ff;
+ --bg:#f5f5f7;
+ --card:rgba(255,255,255,0.7);
+ --text:#1d1d1f;
+ --muted:#6e6e73;
+ --border:rgba(0,0,0,0.08);
+ --blur:blur(20px);
+}
+
+body.dark{
+ --bg:#0b0b0c;
+ --card:rgba(28,28,30,0.6);
+ --text:#f5f5f7;
+ --muted:#aaa;
+ --border:rgba(255,255,255,0.1);
+}
+
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto}
+
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--text);
+ display:flex;
+ justify-content:center;
+ padding:40px 15px;
+ transition:.4s;
+}
+
+.container{max-width:1000px;width:100%}
+
+.header{text-align:center;margin-bottom:30px}
+.header h1{font-size:34px;margin:0;font-weight:700}
+.subtitle{opacity:.6;font-size:14px}
+
+.theme-toggle{
+ margin-top:12px;
+ border-radius:20px;
+ padding:6px 14px;
+ border:1px solid var(--border);
+ background:var(--card);
+ backdrop-filter:var(--blur);
+ cursor:pointer;
+}
+
+.search{margin:25px 0;position:relative}
+.search input{
+ width:100%;
+ padding:14px 45px;
+ border-radius:30px;
+ border:1px solid var(--border);
+ background:var(--card);
+ backdrop-filter:var(--blur);
+}
+.search span{position:absolute;left:15px;top:50%;transform:translateY(-50%);opacity:.5}
+
+.filters{display:flex;gap:10px;overflow:auto;margin-bottom:25px}
+.filters button{
+ padding:8px 16px;
+ border-radius:20px;
+ border:1px solid var(--border);
+ background:var(--card);
+ backdrop-filter:var(--blur);
+ cursor:pointer;
+ color:var(--text);
+}
+body.dark .filters button{
+ color:#ddd;
+}
+.filters button.active{
+ background:var(--primary);
+ color:#fff;
+}
+.filters button.active{
+ background:var(--primary);
+ color:#fff;
+}
+
+.grid{display:grid;gap:20px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(2,1fr)}}
+
+.card{
+ position:relative;
+ padding:20px;
+ border-radius:20px;
+ background:var(--card);
+ backdrop-filter:var(--blur);
+ border:1px solid var(--border);
+ text-decoration:none;
+ color:inherit;
+ overflow:hidden;
+ transform-style:preserve-3d;
+ transition:.3s;
+}
+
+.card:hover{
+ transform:translateY(-8px) scale(1.02);
+ box-shadow:0 20px 40px rgba(0,0,0,.2);
+}
+
+.card h3{margin:0;color:var(--primary)}
+.card p{font-size:14px;color:var(--muted)}
+
+.tag{margin-top:10px;font-size:11px;padding:4px 8px;border-radius:10px;background:rgba(0,0,0,.05)}
+
+.fav{
+ position:absolute;
+ top:12px;
+ right:12px;
+ font-size:18px;
+ cursor:pointer;
+}
+
+.no-results{text-align:center;margin-top:30px;opacity:.6}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+<h1>Herramientas que he creado</h1>
+<div class="subtitle">Luis Páez</div>
+<button class="theme-toggle" id="themeBtn">🌙 Tema</button>
+</div>
+
+<div class="search">
+<span>🔍</span>
+<input id="search" placeholder="Busca una herramienta...">
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div class="grid" id="grid"></div>
+
+</div>
+
+<script>
+const data=[
+{n:"Mi IP Pública",d:"Ver tu IP.",u:"https://ippublica.streamlit.app/",c:"utilidades"},
+{n:"Quita Fondo",d:"Eliminar fondo.",u:"https://quitafondo-luispaez.streamlit.app/",c:"imagenes"},
+{n:"Diccionario Odami",d:"Lengua Odami.",u:"https://diccionarioodamiespanolbyluispaez.streamlit.app/",c:"humanos"},
+{n:"HEIC a JPG",d:"Convertir imágenes.",u:"https://convertidorhiectojpg-luispaez.streamlit.app/",c:"imagenes"},
+{n:"Generador de Etiquetas",d:"Códigos de barras.",u:"https://generadoretiquetasweb-luispaez.streamlit.app/",c:"utilidades"},
+{n:"Trabajo con PDF",d:"Editar PDF.",u:"https://trabajoconpdf-luispaez.streamlit.app/",c:"pdf"},
+{n:"Divisor PDF",d:"Separar PDF.",u:"https://divisorpdfweb-luispaez.streamlit.app/",c:"pdf"},
+{n:"M4A a MP3",d:"Convertir audio.",u:"https://convertidor-m4a-to-mp3-byluispaez.streamlit.app/",c:"audio"},
+{n:"Acordes",d:"Audio a acordes.",u:"https://acordesyletra-luispaez.streamlit.app/",c:"audio"},
+{n:"ICO",d:"PNG a ICO.",u:"https://convertidorico-luispaez.streamlit.app/",c:"imagenes"},
+{n:"Video a Audio",d:"Extraer audio.",u:"https://convertidorvideotoaudio-luispaez.streamlit.app/",c:"audio"},
+{n:"Respiración",d:"Relajación.",u:"https://luispaez28.github.io/respirar/index.html",c:"humanos"},
+{n:"Ruleta",d:"Sorteos.",u:"https://luispaez28.github.io/ruletapremiospaez/",c:"humanos"}
+];
+
+let favs=JSON.parse(localStorage.favs||"[]");
+
+const cats=["todos",...new Set(data.map(x=>x.c))];
+let current="todos";
+
+const grid=document.getElementById("grid");
+const filters=document.getElementById("filters");
+const search=document.getElementById("search");
+
+cats.forEach(c=>{
+ const b=document.createElement("button");
+ b.textContent=c;
+ if(c==="todos")b.classList.add("active");
+ b.onclick=()=>{
+  document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  current=c;
+  render();
+ };
+ filters.appendChild(b);
+});
+
+function render(){
+ grid.innerHTML="";
+ const txt=search.value.toLowerCase();
+ const filtered=data.filter(x=>
+  (current==="todos"||x.c===current)&&
+  (x.n.toLowerCase().includes(txt)||x.d.toLowerCase().includes(txt))
+ );
+
+ if(!filtered.length){
+  grid.innerHTML='<div class="no-results">😕 Sin resultados</div>';
+  return;
+ }
+
+ filtered.forEach(p=>{
+  const a=document.createElement("a");
+  a.href=p.u;
+  a.target="_blank";
+  a.className="card";
+
+  const isFav=favs.includes(p.n);
+
+  a.innerHTML=`
+  <div class="fav">${isFav?"⭐":"☆"}</div>
+  <h3>${p.n}</h3>
+  <p>${p.d}</p>
+  <span class="tag">${p.c}</span>`;
+
+  a.querySelector(".fav").onclick=(e)=>{
+    e.preventDefault();
+    if(favs.includes(p.n))favs=favs.filter(x=>x!==p.n);
+    else favs.push(p.n);
+    localStorage.favs=JSON.stringify(favs);
+    render();
+  };
+
+  // parallax
+  a.onmousemove=(e)=>{
+    const rect=a.getBoundingClientRect();
+    const x=e.clientX-rect.left;
+    const y=e.clientY-rect.top;
+    const rx=(y/rect.height-.5)*10;
+    const ry=(x/rect.width-.5)*-10;
+    a.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
+  };
+  a.onmouseleave=()=>a.style.transform="";
+
+  grid.appendChild(a);
+ });
+}
+
+search.oninput=render;
+render();
+
+const btn=document.getElementById("themeBtn");
+if(localStorage.t==="d")document.body.classList.add("dark");
+btn.onclick=()=>{
+ document.body.classList.toggle("dark");
+ localStorage.t=document.body.classList.contains("dark")?"d":"l";
+};
+
+</script>
+
+</body>
+</html>
