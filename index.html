@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos de Luis Paez</title>
+    <style>
+        /* Variables Modo Claro (por defecto) */
+        :root {
+            --primary: #007bff;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #eeeeee;
+            --input-bg: #ffffff;
+            --filter-bg: #e0e0e0;
+            --alert-bg: #fff3cd;
+            --alert-text: #856404;
+            --alert-border: #ffeeba;
+            --tag-bg: #f0f0f0;
+        }
+
+        /* Variables Modo Oscuro */
+        body.dark-mode {
+            --primary: #4da3ff;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #aaaaaa;
+            --border-color: #333333;
+            --input-bg: #2a2a2a;
+            --filter-bg: #333333;
+            --alert-bg: #2c2714;
+            --alert-text: #d4a849;
+            --alert-border: #4d3d19;
+            --tag-bg: #333333;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Cabecera y Botón Tema */
+        .header { text-align: center; margin-bottom: 20px; }
+        h1 { margin-bottom: 5px; font-size: 24px; }
+        p.subtitle { color: var(--text-muted); margin-top: 0; font-size: 14px; }
+        
+        .theme-toggle {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .theme-toggle:hover { border-color: var(--primary); }
+
+        .alert {
+            background-color: var(--alert-bg);
+            color: var(--alert-text);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid var(--alert-border);
+            transition: all 0.3s;
+        }
+
+        /* Buscador */
+        .search-container { margin-bottom: 15px; }
+        #searchInput {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        #searchInput:focus { border-color: var(--primary); }
+
+        /* Filtros */
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
+        }
+        .filters::-webkit-scrollbar { display: none; }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background-color: var(--filter-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.3s, color 0.3s;
+        }
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+        body.dark-mode .filter-btn.active { color: #121212; font-weight: bold; }
+
+        /* Grid de Proyectos */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr; 
+            gap: 15px;
+        }
+        @media(min-width: 600px) {
+            .grid { grid-template-columns: repeat(2, 1fr); } 
+        }
+
+        /* Tarjetas */
+        .card {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, background-color 0.3s, border-color 0.3s;
+            border: 1px solid var(--border-color);
+        }
+        .card:active { transform: scale(0.98); }
+        .card h3 { margin: 0 0 8px 0; font-size: 18px; color: var(--primary); }
+        .card p { margin: 0; font-size: 14px; color: var(--text-muted); flex-grow: 1; }
+        .card .tag {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 11px;
+            background-color: var(--tag-bg);
+            padding: 3px 8px;
+            border-radius: 10px;
+            align-self: flex-start;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .no-results { text-align: center; color: var(--text-muted); margin-top: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Mis Proyectos</h1>
+        <p class="subtitle">Desarrollado por Luis Paez</p>
+        <button id="themeToggle" class="theme-toggle">🌙 Modo Oscuro</button>
+    </div>
+
+    <div class="alert">
+        <strong>📌 Nota importante:</strong> Algunas de las herramientas pueden aparecer como "dormidas" (sleeping). Solo tienes que hacer clic en <b>"Wake up"</b> o despertar y cargarán en unos segundos.
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Buscar proyecto (ej. PDF, imagen, audio...)">
+    </div>
+
+    <div class="filters" id="filters">
+        <button class="filter-btn active" data-filter="todos">Todos</button>
+        <button class="filter-btn" data-filter="utilidades">Utilidades</button>
+        <button class="filter-btn" data-filter="imagenes">Imágenes</button>
+        <button class="filter-btn" data-filter="pdf">PDF</button>
+        <button class="filter-btn" data-filter="audio-video">Audio/Video</button>
+        <button class="filter-btn" data-filter="humanos">Humanos</button>
+    </div>
+
+    <div class="grid" id="projectGrid">
+        </div>
+</div>
+
+<script>
+    // Configuración del Modo Oscuro
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Verificar si el usuario ya tenía el modo oscuro guardado
+    if (localStorage.getItem('tema') === 'oscuro') {
+        body.classList.add('dark-mode');
+        themeToggle.textContent = '☀️ Modo Claro';
+    }
+
+    // Cambiar tema al hacer clic
+    themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('tema', 'oscuro');
+            themeToggle.textContent = '☀️ Modo Claro';
+        } else {
+            localStorage.setItem('tema', 'claro');
+            themeToggle.textContent = '🌙 Modo Oscuro';
+        }
+    });
+
+    // Datos de tus proyectos
+    const proyectos = [
+        { nombre: "Mi IP Pública", desc: "Para ver tu dirección IP pública.", url: "https://ippublica.streamlit.app/", categoria: "utilidades" },
+        { nombre: "Quita Fondo", desc: "Herramienta para quitar el fondo de una imagen.", url: "https://quitafondo-luispaez.streamlit.app/", categoria: "imagenes" },
+        { nombre: "Diccionario Odami", desc: "Diccionario de lengua Odami a Español.", url: "https://diccionarioodamiespanolbyluispaez.streamlit.app/", categoria: "humanos" },
+        { nombre: "HEIC a JPG", desc: "Convierte imágenes HEIC (formato de iPhone) a formato JPG.", url: "https://convertidorhiectojpg-luispaez.streamlit.app/", categoria: "imagenes" },
+        { nombre: "Generador de Etiquetas", desc: "Generador de etiquetas de código de barras web.", url: "https://generadoretiquetasweb-luispaez.streamlit.app/", categoria: "utilidades" },
+        { nombre: "Trabajo con PDF", desc: "Divide, une o convierte archivos PDF a Word.", url: "https://trabajoconpdf-luispaez.streamlit.app/", categoria: "pdf" },
+        { nombre: "Divisor de PDF", desc: "Herramienta específica para dividir documentos PDF.", url: "https://divisorpdfweb-luispaez.streamlit.app/", categoria: "pdf" },
+        { nombre: "Convertidor M4A a MP3", desc: "Convierte archivos de audio m4a, ogg y mp4 a formato mp3.", url: "https://convertidor-m4a-to-mp3-byluispaez.streamlit.app/", categoria: "audio-video" },
+        { nombre: "Acordes y Letra", desc: "Obtén acordes desde un archivo de audio (Fase experimental).", url: "https://acordesyletra-luispaez.streamlit.app/", categoria: "audio-video" },
+        { nombre: "Convertidor a ICO", desc: "Convierte imágenes formato PNG a íconos formato ICO.", url: "https://convertidorico-luispaez.streamlit.app/", categoria: "imagenes" },
+        { nombre: "Video a Audio", desc: "Extrae el audio de un archivo de video.", url: "https://convertidorvideotoaudio-luispaez.streamlit.app/", categoria: "audio-video" },
+        { nombre: "Respiración Guiada", desc: "Herramienta interactiva de respiración guiada para relajación.", url: "https://luispaez28.github.io/respirar/index.html", categoria: "humanos" },
+        { nombre: "Ruleta de Premios", desc: "Ruleta interactiva para sorteos o premios.", url: "https://luispaez28.github.io/ruletapremiospaez/", categoria: "humanos" }
+    ];
+
+    const projectGrid = document.getElementById('projectGrid');
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    let filtroActual = 'todos';
+
+    // Función para renderizar los proyectos
+    function renderProyectos() {
+        projectGrid.innerHTML = '';
+        const textoBusqueda = searchInput.value.toLowerCase();
+
+        const proyectosFiltrados = proyectos.filter(proyecto => {
+            const coincideCategoria = filtroActual === 'todos' || proyecto.categoria === filtroActual;
+            const coincideBusqueda = proyecto.nombre.toLowerCase().includes(textoBusqueda) || proyecto.desc.toLowerCase().includes(textoBusqueda);
+            return coincideCategoria && coincideBusqueda;
+        });
+
+        if (proyectosFiltrados.length === 0) {
+            projectGrid.innerHTML = '<div class="no-results">No se encontraron proyectos con esos criterios.</div>';
+            return;
+        }
+
+        proyectosFiltrados.forEach(proyecto => {
+            const card = document.createElement('a');
+            card.href = proyecto.url;
+            card.target = "_blank"; // Abre en nueva pestaña
+            card.className = 'card';
+            
+            // Etiqueta legible
+            let etiqueta = proyecto.categoria.replace('-', ' / ');
+
+            card.innerHTML = `
+                <h3>${proyecto.nombre}</h3>
+                <p>${proyecto.desc}</p>
+                <span class="tag">${etiqueta}</span>
+            `;
+            projectGrid.appendChild(card);
+        });
+    }
+
+    // Eventos
+    searchInput.addEventListener('input', renderProyectos);
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Actualizar botones visualmente
+            filterBtns.forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            // Aplicar filtro
+            filtroActual = e.target.getAttribute('data-filter');
+            renderProyectos();
+        });
+    });
+
+    // Render inicial
+    renderProyectos();
+</script>
+
+</body>
+</html>
